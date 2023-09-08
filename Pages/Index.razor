@@ -1,0 +1,75 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+
+@inject NavigationManager NavManager
+@implements IAsyncDisposable
+
+<div class="form-group">
+    <label>
+        User: <input @bind="userInput" />
+    </label>
+</div>
+
+<div class="form-group">
+    <label>
+        Message: <input @bind="messageInput" />
+    </label>
+</div>
+
+<button @onclick="Send" disabled="@(IsConnected == false)"> Send </button>
+
+<hr />
+
+<ul>
+    @foreach (string message in messages)
+    {
+        <li>@message
+        </li>
+    }
+</ul>
+
+
+@code {
+    private HubConnection? hubConnection;
+    private List<string> messages = new();
+    private string? userInput;
+    private string? messageInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //build the connection
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavManager.ToAbsoluteUri("/chathub"))//this is the hub we wana talk to
+            .WithAutomaticReconnect()//if problem with connect for ex wifi to cell, if connect is lost then reconnects immediately then 2s 10s 30s by default
+            .Build();
+
+        //capture event
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            var formattedMessage = $"{user}: {message}";
+            messages.Add(formattedMessage);
+            InvokeAsync(StateHasChanged);//invoke state has changed asynchronously...need to tell blazer something changed on the page it checks for new values, otherwise it may not display these new values until something else on this page has changed
+        });
+
+        await hubConnection.StartAsync();
+
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", userInput, messageInput);//broadcast this to everybody (SendMessage)
+        }
+    }
+
+    public bool IsConnected => hubConnection?.State == HubConnectionState.Connected;//if a state is = to connected its connected otherwise it is false
+    //handle the disposal of this page
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)//if there is a connection no matter the state then
+        {
+            await hubConnection.DisposeAsync();//properly close down and dispose of our hub connection
+        }
+    }
+}
