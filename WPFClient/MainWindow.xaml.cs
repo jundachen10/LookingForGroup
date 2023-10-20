@@ -20,7 +20,7 @@ namespace WPFClient
 
             connection = new HubConnectionBuilder()
                 .WithUrl("https://localhost:7181/chathub")//in BlazorServer launchSettings.json 
-                .WithAutomaticReconnect()
+                .WithAutomaticReconnect()//auto reconnect in case we drop connection
                 .Build();
 
             //Closed
@@ -53,12 +53,12 @@ namespace WPFClient
 
             try
             {
-                await connection.StartAsync();
+                await connection.StartAsync();// this starts the Signal R connection...if yes then do below "connection started" message
                 messages.Items.Add("Connection Started");
                 openConnection.IsEnabled = false;//open connection button
                 sendMessage.IsEnabled = true;//sendmessage button
             }
-            catch (Exception ex) 
+            catch (Exception ex) // if an exception occurs display this in the UI
             {
                 messages.Items.Add(ex.Message);
             }
