@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 
+
 namespace WPFClient
 {
     /// <summary>
@@ -22,6 +23,7 @@ namespace WPFClient
                 .WithUrl("https://localhost:7181/chathub")//in BlazorServer launchSettings.json 
                 .WithAutomaticReconnect()//auto reconnect in case we drop connection
                 .Build();
+
 
             //Closed
             connection.Closed += (sender) =>
