@@ -1,13 +1,17 @@
 using BlazorServer.Data;
 using Microsoft.AspNetCore.ResponseCompression;
 using BlazorServer.Hubs;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddSignalR();
+// add factory to inject into new DbContext instances
+builder.Services.AddDbContextFactory<LFGDataContext>((DbContextOptionsBuilder options) 
+    => options.UseSqlServer());
 
 //connection for signalr is small and optimized
 builder.Services.AddResponseCompression(opts =>

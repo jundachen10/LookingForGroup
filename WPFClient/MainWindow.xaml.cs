@@ -3,7 +3,7 @@ using System.Windows;
 using System;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
-
+using System.Reflection.Metadata.Ecma335;
 
 namespace WPFClient
 {
@@ -39,6 +39,9 @@ namespace WPFClient
 
                 return Task.CompletedTask;
             };
+
+            //On start connection
+
         }
 
         //The Open Connection button

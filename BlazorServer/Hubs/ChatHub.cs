@@ -11,10 +11,23 @@ namespace BlazorServer.Hubs;
 // This is where we define our server side logic for real-time comms using SignalR
 public class ChatHub : Hub //inherits from the signalR package
 {
+    private readonly LFGDataContext _context;
+    private readonly IDictionary<int, string> _connections;
+
     public Task SendMessage(string user, string message)
     {
         return Clients.All.SendAsync("ReceiveMessage", user, message);
     }
+
+    // method: on connect show client ID
+
+   
+    // method: open steam app on all clients
+    // method: open steam app on target machine
+    // method: see if steam app is running on target machine
+    // method: see all current instances of steam app opened
+    // method: see current games being played
+    // method: 
 
 }
 
