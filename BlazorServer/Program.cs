@@ -10,8 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSignalR();
 // add factory to inject into new DbContext instances
-builder.Services.AddDbContextFactory<LFGDataContext>((DbContextOptionsBuilder options) 
-    => options.UseSqlServer());
+
 
 //connection for signalr is small and optimized
 builder.Services.AddResponseCompression(opts =>
